@@ -1,0 +1,17 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+    int i;
+
+    for(i = 3; i <= 1000; i+=3)
+        printf("%4d ", i);
+        
+    printf("\n");
+        
+    for(i = 0; i <= 1000; i+=5)
+        printf("%4d ", i);
+
+
+    return 0;
+}
