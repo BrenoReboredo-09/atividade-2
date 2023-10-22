@@ -1,0 +1,265 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct Node {
+    char artist[100];
+    char song[100];
+    struct Node* next;
+    struct Node* prev;
+} Node;
+
+Node* createNode(const char* artist, const char* song) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    strcpy(newNode->artist, artist);
+    strcpy(newNode->song, song);
+    newNode->next = newNode->prev = NULL;
+    return newNode;
+}
+
+// Função para inserir um nó na lista
+void insertNode(Node** head, const char* artist, const char* song) {
+    Node* newNode = createNode(artist, song);
+
+    if (*head == NULL) {
+        *head = newNode;
+        (*head)->next = (*head)->prev = *head;
+    } else {
+        Node* last = (*head)->prev;
+        newNode->next = *head;
+        (*head)->prev = newNode;
+        newNode->prev = last;
+        last->next = newNode;
+    }
+}
+
+void displayList(Node* head) {
+    if (head == NULL) {
+        printf("A lista está vazia.\n");
+        return;
+    }
+
+    Node* current = head;
+    printf("Playlist:\n");
+    do {
+        printf("%s - %s\n", current->artist, current->song);
+        current = current->next;
+    } while (current != head);
+}
+
+void sortListByName(Node** head) {
+    if (*head == NULL) {
+        printf("A lista está vazia.\n");
+        return;
+    }
+
+    Node* current = *head;
+    do {
+        Node* temp = current->next;
+        while (temp != *head) {
+            if (strcmp(current->song, temp->song) > 0) {
+                // Troca os nós
+                char tempArtist[100];
+                char tempSong[100];
+                strcpy(tempArtist, current->artist);
+                strcpy(tempSong, current->song);
+                strcpy(current->artist, temp->artist);
+                strcpy(current->song, temp->song);
+                strcpy(temp->artist, tempArtist);
+                strcpy(temp->song, tempSong);
+            }
+            temp = temp->next;
+        }
+        current = current->next;
+    } while (current != *head);
+}
+
+void saveToFile(Node* head) {
+    if (head == NULL) {
+        printf("A lista está vazia, nada para salvar.\n");
+        return;
+    }
+
+    FILE* file = fopen("musicas.txt", "w");
+    if (file == NULL) {
+        printf("Erro ao abrir o arquivo para escrita.\n");
+        return;
+    }
+
+    Node* current = head;
+    do {
+        fprintf(file, "%s;%s\n", current->artist, current->song);
+        current = current->next;
+    } while (current != head);
+
+    fclose(file);
+    printf("Playlist salva no arquivo 'musicas.txt'.\n");
+}
+
+void removeNode(Node** head, const char* artist, const char* song) {
+    if (*head == NULL) {
+        printf("A lista está vazia.\n");
+        return;
+    }
+
+    Node* current = *head;
+    Node* toDelete = NULL;
+
+    do {
+        if (strcmp(current->artist, artist) == 0 && strcmp(current->song, song) == 0) {
+            toDelete = current;
+            break;
+        }
+        current = current->next;
+    } while (current != *head);
+
+    if (toDelete != NULL) {
+        if (toDelete->next == toDelete) {
+            *head = NULL;
+        } else {
+            if (toDelete == *head) {
+                *head = toDelete->next;
+            }
+            toDelete->prev->next = toDelete->next;
+            toDelete->next->prev = toDelete->prev;
+        }
+        free(toDelete);
+        printf("Música removida com sucesso.\n");
+    } else {
+        printf("Música não encontrada na lista.\n");
+    }
+}
+
+void nextSong(Node** currentSong) {
+    if (*currentSong != NULL) {
+        *currentSong = (*currentSong)->next;
+        printf("Avançou para a próxima música.\n");
+    }
+}
+
+void prevSong(Node** currentSong) {
+    if (*currentSong != NULL) {
+        *currentSong = (*currentSong)->prev;
+        printf("Retornou à música anterior.\n");
+    }
+}
+
+void searchSong(Node* head, const char* songName) {
+    if (head == NULL) {
+        printf("A lista está vazia.\n");
+        return;
+    }
+
+    Node* current = head;
+    int found = 0;
+    do {
+        if (strcmp(current->song, songName) == 0) {
+            printf("Música encontrada: %s - %s\n", current->artist, current->song);
+            found = 1;
+        }
+        current = current->next;
+    } while (current != head);
+
+    if (!found) {
+        printf("Música não encontrada na lista.\n");
+    }
+}
+
+int main() {
+    Node* playlist = NULL;
+    Node* currentSong = NULL;
+
+    FILE* file = fopen("musicas.txt", "r");
+    if (file != NULL) {
+        char line[256];
+        while (fgets(line, sizeof(line), file) != NULL) {
+            char artist[100], song[100];
+            sscanf(line, "%[^;];%[^\n]", artist, song);
+            insertNode(&playlist, artist, song);
+        }
+        fclose(file);
+    } else {
+        printf("Arquivo 'musicas.txt' não encontrado.\n");
+    }
+
+    int choice;
+    char artist[100], song[100];
+
+    do {
+        printf("\nMenu:\n");
+        printf("1. Exibir a playlist pela ordem de cadastro\n");
+        printf("2. Exibir a playlist ordenada pelo nome das músicas\n");
+        printf("3. Inserir uma nova música\n");
+        printf("4. Remover uma música\n");
+        printf("5. Buscar uma música\n");
+        printf("6. Avançar para a próxima música\n");
+        printf("7. Retornar à música anterior\n");
+        printf("8. Salvar a playlist no arquivo\n");
+        printf("9. Sair\n");
+        printf("Escolha uma opção: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                displayList(playlist);
+                break;
+            case 2:
+                sortListByName(&playlist);
+                displayList(playlist);
+                break;
+            case 3:
+                printf("Digite o nome do artista: ");
+                scanf("%s", artist);
+                printf("Digite o nome da música: ");
+                scanf("%s", song);
+                insertNode(&playlist, artist, song);
+                // Salvar no arquivo
+                saveToFile(playlist);
+                break;
+            case 4:
+                printf("Digite o nome da música a ser removida: ");
+                scanf("%s", song);
+                removeNode(&playlist, artist, song);
+                // Salvar no arquivo
+                saveToFile(playlist);
+                break;
+            case 5:
+                printf("Digite o nome da música a ser buscada: ");
+                scanf("%s", song);
+                searchSong(playlist, song);
+                break;
+            case 6:
+                nextSong(&currentSong);
+                if (currentSong != NULL) {
+                    printf("Tocando: %s - %s\n", currentSong->artist, currentSong->song);
+                } else {
+                    printf("A lista está vazia ou você chegou ao final.\n");
+                }
+                break;
+            case 7:
+                prevSong(&currentSong);
+                if (currentSong != NULL) {
+                    printf("Tocando: %s - %s\n", currentSong->artist, currentSong->song);
+                } else {
+                    printf("A lista está vazia ou você está no início.\n");
+                }
+                break;
+            case 8:
+                saveToFile(playlist);
+                break;
+            case 9:
+                printf("Saindo do programa.\n");
+                break;
+            default:
+                printf("Opção inválida. Tente novamente.\n");
+        }
+    } while (choice != 9);
+
+    while (playlist != NULL) {
+        Node* temp = playlist;
+        playlist = playlist->next;
+        free(temp);
+    }
+
+    return 0;
+}
