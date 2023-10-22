@@ -17,7 +17,6 @@ Node* createNode(const char* artist, const char* song) {
     return newNode;
 }
 
-// Função para inserir um nó na lista
 void insertNode(Node** head, const char* artist, const char* song) {
     Node* newNode = createNode(artist, song);
 
@@ -213,14 +212,12 @@ int main() {
                 printf("Digite o nome da música: ");
                 scanf("%s", song);
                 insertNode(&playlist, artist, song);
-                // Salvar no arquivo
                 saveToFile(playlist);
                 break;
             case 4:
                 printf("Digite o nome da música a ser removida: ");
                 scanf("%s", song);
                 removeNode(&playlist, artist, song);
-                // Salvar no arquivo
                 saveToFile(playlist);
                 break;
             case 5:
