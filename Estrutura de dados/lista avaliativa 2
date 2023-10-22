@@ -57,7 +57,6 @@ void sortListByName(Node** head) {
         Node* temp = current->next;
         while (temp != *head) {
             if (strcmp(current->song, temp->song) > 0) {
-                // Troca os nós
                 char tempArtist[100];
                 char tempSong[100];
                 strcpy(tempArtist, current->artist);
