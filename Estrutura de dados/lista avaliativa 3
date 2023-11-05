@@ -1,0 +1,204 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct Livro {
+    char titulo[100];
+    char autor[100];
+    struct Livro *prox;
+} Livro;
+
+typedef struct Fila {
+    Livro *inicio;
+    Livro *fim;
+} Fila;
+
+typedef struct Pilha {
+    Livro *topo;
+} Pilha;
+
+Livro *criarLivro(char titulo[100], char autor[100]) {
+    Livro *novoLivro = (Livro *)malloc(sizeof(Livro));
+    strcpy(novoLivro->titulo, titulo);
+    strcpy(novoLivro->autor, autor);
+    novoLivro->prox = NULL;
+    return novoLivro;
+}
+
+Fila *criarFila() {
+    Fila *fila = (Fila *)malloc(sizeof(Fila));
+    fila->inicio = NULL;
+    fila->fim = NULL;
+    return fila;
+}
+
+Pilha *criarPilha() {
+    Pilha *pilha = (Pilha *)malloc(sizeof(Pilha));
+    pilha->topo = NULL;
+    return pilha;
+}
+
+void inserirFila(Fila *fila, Livro *novoLivro) {
+    if (fila->fim == NULL) {
+        fila->inicio = novoLivro;
+        fila->fim = novoLivro;
+    } else {
+        fila->fim->prox = novoLivro;
+        fila->fim = novoLivro;
+    }
+}
+
+void inserirPilha(Pilha *pilha, Livro *novoLivro) {
+    novoLivro->prox = pilha->topo;
+    pilha->topo = novoLivro;
+}
+
+void removerFila(Fila *fila) {
+    if (fila->inicio != NULL) {
+        Livro *livroRemovido = fila->inicio;
+        fila->inicio = fila->inicio->prox;
+        free(livroRemovido);
+        if (fila->inicio == NULL) {
+            fila->fim = NULL;
+        }
+    }
+}
+
+void removerPilha(Pilha *pilha) {
+    if (pilha->topo != NULL) {
+        Livro *livroRemovido = pilha->topo;
+        pilha->topo = pilha->topo->prox;
+        free(livroRemovido);
+    }
+}
+
+void exibirFila(Fila *fila) {
+    Livro *livroAtual = fila->inicio;
+    printf("Fila de Livros:\n");
+    while (livroAtual != NULL) {
+        printf("Título: %s\nAutor: %s\n\n", livroAtual->titulo, livroAtual->autor);
+        livroAtual = livroAtual->prox;
+    }
+}
+
+void exibirPilha(Pilha *pilha) {
+    Livro *livroAtual = pilha->topo;
+    printf("Pilha de Livros:\n");
+    while (livroAtual != NULL) {
+        printf("Título: %s\nAutor: %s\n\n", livroAtual->titulo, livroAtual->autor);
+        livroAtual = livroAtual->prox;
+    }
+}
+
+void lerLivrosDaFila(const char *nomeArquivo, Fila *fila) {
+    FILE *arquivo = fopen(nomeArquivo, "r");
+    if (arquivo == NULL) {
+        printf("Erro ao abrir o arquivo %s\n", nomeArquivo);
+        return;
+    }
+
+    char linha[201];
+    char *titulo, *autor;
+
+    while (fgets(linha, sizeof(linha), arquivo) != NULL) {
+        linha[strcspn(linha, "\n")] = 0;
+
+        titulo = strtok(linha, ";");
+        autor = strtok(NULL, ";");
+
+        if (titulo != NULL && autor != NULL) {
+            Livro *novoLivro = criarLivro(titulo, autor);
+            inserirFila(fila, novoLivro);
+        }
+    }
+
+    fclose(arquivo);
+}
+
+void lerLivrosDaPilha(const char *nomeArquivo, Pilha *pilha) {
+    FILE *arquivo = fopen(nomeArquivo, "r");
+    if (arquivo == NULL) {
+        printf("Erro ao abrir o arquivo %s\n", nomeArquivo);
+        return;
+    }
+
+    char linha[201];
+    char *titulo, *autor;
+
+    while (fgets(linha, sizeof(linha), arquivo) != NULL) {
+        linha[strcspn(linha, "\n")] = 0;
+
+        titulo = strtok(linha, ";");
+        autor = strtok(NULL, ";");
+
+        if (titulo != NULL && autor != NULL) {
+            Livro *novoLivro = criarLivro(titulo, autor);
+            inserirPilha(pilha, novoLivro);
+        }
+    }
+
+    fclose(arquivo);
+}
+
+int main() {
+    Fila *fila = criarFila();
+    Pilha *pilha = criarPilha();
+
+    lerLivrosDaFila("fila_de_livros.txt", fila);
+    lerLivrosDaPilha("pilha_de_livros.txt", pilha);
+
+    int escolha;
+    char titulo[100];
+    char autor[100];
+
+    do {
+        printf("\nMenu:\n");
+        printf("1. Exibir fila de livros\n");
+        printf("2. Exibir pilha de livros\n");
+        printf("3. Inserir livro na fila\n");
+        printf("4. Inserir livro na pilha\n");
+        printf("5. Remover livro da fila\n");
+        printf("6. Remover livro da pilha\n");
+        printf("0. Sair\n");
+
+        printf("Escolha uma opção: ");
+        scanf("%d", &escolha);
+
+        switch (escolha) {
+            case 1:
+                exibirFila(fila);
+                break;
+            case 2:
+                exibirPilha(pilha);
+                break;
+            case 3:
+                printf("Digite o título do livro a ser inserido na fila: ");
+                scanf(" %[^\n]", titulo);
+                printf("Digite o autor do livro: ");
+                scanf(" %[^\n]", autor);
+                Livro *novoLivroFila = criarLivro(titulo, autor);
+                inserirFila(fila, novoLivroFila);
+                break;
+            case 4:
+                printf("Digite o título do livro a ser inserido na pilha: ");
+                scanf(" %[^\n]", titulo);
+                printf("Digite o autor do livro: ");
+                scanf(" %[^\n]", autor);
+                Livro *novoLivroPilha = criarLivro(titulo, autor);
+                inserirPilha(pilha, novoLivroPilha);
+                break;
+            case 5:
+                removerFila(fila);
+                break;
+            case 6:
+                removerPilha(pilha);
+                break;
+            case 0:
+                break;
+            default:
+                printf("Opção inválida!\n");
+        }
+    } while (escolha != 0);
+
+    return 0;
+}
