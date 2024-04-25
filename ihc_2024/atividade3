@@ -55,20 +55,16 @@
     </div>
 
     <script>
-        // Função para exibir a data e hora atual
         function mostrarDataHoraAtual() {
             const agora = new Date();
             const dataHoraFormatada = agora.toLocaleString();
             document.getElementById('dataHoraAtualContainer').innerText = `Data e Hora Atuais: ${dataHoraFormatada}`;
         }
 
-        // Chamada inicial para exibir a data e hora atual
         mostrarDataHoraAtual();
         
-        // Atualizar a hora a cada segundo
         setInterval(mostrarDataHoraAtual, 1000);
 
-        // Função para validar CPF
         function validarCPF() {
             const cpf = document.getElementById('cpfInput').value.replace(/[^\d]/g, '');
             // Lógica de validação do CPF...
@@ -77,11 +73,9 @@
                 return;
             }
 
-            // Verificação do CPF...
             document.getElementById('cpfValidation').innerText = 'CPF válido';
         }
 
-        // Função para validar CNPJ
         function validarCNPJ() {
             const cnpj = document.getElementById('cnpjInput').value.replace(/[^\d]/g, '');
             // Lógica de validação do CNPJ...
@@ -90,11 +84,9 @@
                 return;
             }
 
-            // Verificação do CNPJ...
             document.getElementById('cnpjValidation').innerText = 'CNPJ válido';
         }
 
-        // Função para calcular comissão
         function calcularComissao() {
             const valorVenda = document.getElementById('valorInput').value;
             const taxaComissao = document.getElementById('comissaoInput').value / 100; // Convertendo a porcentagem para decimal
@@ -102,14 +94,12 @@
             document.getElementById('comissaoResult').innerText = `Comissão: R$ ${comissao.toFixed(2)}`;
         }
 
-        // Função para mostrar o valor absoluto
         function mostrarValorAbsoluto() {
             const valor = document.getElementById('valorAbsolutoInput').value;
             const valorAbsoluto = Math.abs(valor);
             document.getElementById('valorAbsolutoResult').innerText = `Valor Absoluto: ${valorAbsoluto}`;
         }
 
-        // Função para mostrar o valor arredondado
         function mostrarValorArredondado() {
             const valor = parseFloat(document.getElementById('valorArredondadoInput').value.replace(',', '.'));
             const valorArredondado = Math.round(valor);
