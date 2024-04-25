@@ -67,7 +67,6 @@
 
         function validarCPF() {
             const cpf = document.getElementById('cpfInput').value.replace(/[^\d]/g, '');
-            // Lógica de validação do CPF...
             if (cpf.length !== 11) {
                 document.getElementById('cpfValidation').innerText = 'CPF inválido';
                 return;
@@ -78,7 +77,6 @@
 
         function validarCNPJ() {
             const cnpj = document.getElementById('cnpjInput').value.replace(/[^\d]/g, '');
-            // Lógica de validação do CNPJ...
             if (cnpj.length !== 14) {
                 document.getElementById('cnpjValidation').innerText = 'CNPJ inválido';
                 return;
@@ -89,7 +87,7 @@
 
         function calcularComissao() {
             const valorVenda = document.getElementById('valorInput').value;
-            const taxaComissao = document.getElementById('comissaoInput').value / 100; // Convertendo a porcentagem para decimal
+            const taxaComissao = document.getElementById('comissaoInput').value / 100;
             const comissao = valorVenda * taxaComissao;
             document.getElementById('comissaoResult').innerText = `Comissão: R$ ${comissao.toFixed(2)}`;
         }
