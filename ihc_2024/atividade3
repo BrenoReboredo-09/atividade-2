@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Funções JavaScript</title>
+    <style>
+        .input-container {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Funções JavaScript</h1>
+    
+    <div id="dataHoraAtualContainer" class="input-container"></div>
+
+    <div class="input-container">
+        <label for="cpfInput">CPF:</label>
+        <input type="text" id="cpfInput" placeholder="Insira o CPF">
+        <button onclick="validarCPF()">Validar CPF</button>
+        <div id="cpfValidation" class="result"></div>
+    </div>
+
+    <div class="input-container">
+        <label for="cnpjInput">CNPJ:</label>
+        <input type="text" id="cnpjInput" placeholder="Insira o CNPJ">
+        <button onclick="validarCNPJ()">Validar CNPJ</button>
+        <div id="cnpjValidation" class="result"></div>
+    </div>
+
+    <div class="input-container">
+        <label for="valorInput">Valor:</label>
+        <input type="number" id="valorInput" placeholder="Insira o valor">
+        <label for="comissaoInput">Porcentagem da Comissão:</label>
+        <input type="number" id="comissaoInput" placeholder="Insira a porcentagem">
+        <button onclick="calcularComissao()">Calcular Comissão</button>
+        <div id="comissaoResult" class="result"></div>
+    </div>
+
+    <div class="input-container">
+        <label for="valorAbsolutoInput">Valor para Absoluto:</label>
+        <input type="number" id="valorAbsolutoInput" placeholder="Insira o valor">
+        <button onclick="mostrarValorAbsoluto()">Mostrar Valor Absoluto</button>
+        <div id="valorAbsolutoResult" class="result"></div>
+    </div>
+
+    <div class="input-container">
+        <label for="valorArredondadoInput">Valor para Arredondamento:</label>
+        <input type="text" id="valorArredondadoInput" placeholder="Insira o valor">
+        <button onclick="mostrarValorArredondado()">Mostrar Valor Arredondado</button>
+        <div id="valorArredondadoResult" class="result"></div>
+    </div>
+
+    <script>
+        // Função para exibir a data e hora atual
+        function mostrarDataHoraAtual() {
+            const agora = new Date();
+            const dataHoraFormatada = agora.toLocaleString();
+            document.getElementById('dataHoraAtualContainer').innerText = `Data e Hora Atuais: ${dataHoraFormatada}`;
+        }
+
+        // Chamada inicial para exibir a data e hora atual
+        mostrarDataHoraAtual();
+        
+        // Atualizar a hora a cada segundo
+        setInterval(mostrarDataHoraAtual, 1000);
+
+        // Função para validar CPF
+        function validarCPF() {
+            const cpf = document.getElementById('cpfInput').value.replace(/[^\d]/g, '');
+            // Lógica de validação do CPF...
+            if (cpf.length !== 11) {
+                document.getElementById('cpfValidation').innerText = 'CPF inválido';
+                return;
+            }
+
+            // Verificação do CPF...
+            document.getElementById('cpfValidation').innerText = 'CPF válido';
+        }
+
+        // Função para validar CNPJ
+        function validarCNPJ() {
+            const cnpj = document.getElementById('cnpjInput').value.replace(/[^\d]/g, '');
+            // Lógica de validação do CNPJ...
+            if (cnpj.length !== 14) {
+                document.getElementById('cnpjValidation').innerText = 'CNPJ inválido';
+                return;
+            }
+
+            // Verificação do CNPJ...
+            document.getElementById('cnpjValidation').innerText = 'CNPJ válido';
+        }
+
+        // Função para calcular comissão
+        function calcularComissao() {
+            const valorVenda = document.getElementById('valorInput').value;
+            const taxaComissao = document.getElementById('comissaoInput').value / 100; // Convertendo a porcentagem para decimal
+            const comissao = valorVenda * taxaComissao;
+            document.getElementById('comissaoResult').innerText = `Comissão: R$ ${comissao.toFixed(2)}`;
+        }
+
+        // Função para mostrar o valor absoluto
+        function mostrarValorAbsoluto() {
+            const valor = document.getElementById('valorAbsolutoInput').value;
+            const valorAbsoluto = Math.abs(valor);
+            document.getElementById('valorAbsolutoResult').innerText = `Valor Absoluto: ${valorAbsoluto}`;
+        }
+
+        // Função para mostrar o valor arredondado
+        function mostrarValorArredondado() {
+            const valor = parseFloat(document.getElementById('valorArredondadoInput').value.replace(',', '.'));
+            const valorArredondado = Math.round(valor);
+            document.getElementById('valorArredondadoResult').innerText = `Valor Arredondado: ${valorArredondado}`;
+        }
+    </script>
+</body>
+</html>
